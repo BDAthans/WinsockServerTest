@@ -80,6 +80,14 @@ int _cdecl main() {
 		return 1;
 	}
 
+
+	// Set the exclusive address option to avoid malicious application binding to the same port
+	int optval = 1;
+	int setResult = setsockopt(ListenSocket, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char*)&optval, sizeof(optval));
+	if (setResult == SOCKET_ERROR) {
+		cout << "setsockopt for SO_EXCLUSIVEADDRUSE failed with error: " << WSAGetLastError() << "\n";
+	}
+
 	/*
 	For the server to accept client connections, it must be bound to a network address within the system.
 	The sockaddr structure holds info regarding the addres family, IP address and port number.
@@ -128,7 +136,7 @@ int _cdecl main() {
 	the work to another thread to handle the request. Several programming techniques are also possible.
 	This example does not use multiple threads and listens for and accepts only a single connection.
 	*/
-	cout << "Starting Listening on port: " << DEFAULT_PORT << "\n\n";
+	cout << "Started Listening on port: " << DEFAULT_PORT << "\n\n";
 	ClientRecvSocket = accept(ListenSocket, NULL, NULL);
 	if (ClientRecvSocket == INVALID_SOCKET) {
 		cout << "Accept Failed: " << WSAGetLastError() << "\n";
